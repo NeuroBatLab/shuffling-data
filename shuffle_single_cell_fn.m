@@ -4,7 +4,7 @@ function [shuffled_data_plane_cell] = shuffle_single_cell_fn(bat_name,dates,data
 % dates = '181010';
 % data_file_name = '1';
 %% Parameters
-data_folder_name = '/global/scratch/jelie/PlaneCells';
+data_folder_name = '/global/scratch/jelie/PlaneCells/Data_cluster';
 % data_folder_name = 'D:\Yartsev lab\Height cell experiment\restructured data\';
 bat_folder_name = fullfile(data_folder_name,bat_name);
 bat_folder_name_date = strcat(bat_folder_name,filesep,dates);
