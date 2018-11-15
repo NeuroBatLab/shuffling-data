@@ -39,8 +39,8 @@ time_spent_minimum = 0.2 ; % Will discard pixels in which the animal spent < thi
 spike_thresh = 40;
 
 %% Main loop
-cd(bat_folder_name_date)
-load(data_file_name)
+% cd(bat_folder_name_date)
+load(fullfile(bat_folder_name_date,data_file_name))
 
 shuffled_data_plane_cell = [];
 
