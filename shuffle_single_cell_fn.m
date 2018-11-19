@@ -3,6 +3,7 @@ function [shuffled_data_plane_cell] = shuffle_single_cell_fn(bat_name,dates,data
 % bat_name = 'Adren';
 % dates = '181010';
 % data_file_name = '1';
+
 %% Parameters
 data_folder_name = '/global/scratch/jelie/PlaneCells/Data_cluster';
 % data_folder_name = 'D:\Yartsev lab\Height cell experiment\restructured data\';
@@ -37,6 +38,14 @@ hsize =4*round(sigmaa)+1; % hsize is the size of the kernel: I define it as 5*ro
 gaussian_kernel = fspecial('gaussian',hsize,sigmaa);
 time_spent_minimum = 0.2 ; % Will discard pixels in which the animal spent < this minimal time (seconds)
 spike_thresh = 40;
+
+%% Configure paralle computing
+if ~isempty(strfind(getenv('HOSTNAME'),'.savio')) || ~isempty(strfind(getenv('HOSTNAME'),'.brc'))
+    MyParPool = parpool(min(nshuffle,str2double(getenv('SLURM_CPUS_ON_NODE'))),'IdleTimeout', Inf);
+    system('mkdir -p /global/scratch/$USER/PlaneCells/$SLURM_JOB_ID')
+    [~,JobID] = system('echo $SLURM_JOB_ID');
+    parcluster.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
+end
 
 %% Main loop
 % cd(bat_folder_name_date)
