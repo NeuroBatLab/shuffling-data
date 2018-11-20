@@ -3,7 +3,9 @@ function [shuffled_data_plane_cell] = shuffle_single_cell_fn(bat_name,dates,data
 % bat_name = 'Adren';
 % dates = '181010';
 % data_file_name = '1';
+
 %% Parameters
+TimeKeeper = tic;
 data_folder_name = '/global/scratch/jelie/PlaneCells/Data_cluster';
 % data_folder_name = 'D:\Yartsev lab\Height cell experiment\restructured data\';
 bat_folder_name = fullfile(data_folder_name,bat_name);
@@ -38,10 +40,20 @@ gaussian_kernel = fspecial('gaussian',hsize,sigmaa);
 time_spent_minimum = 0.2 ; % Will discard pixels in which the animal spent < this minimal time (seconds)
 spike_thresh = 40;
 
+%% Configure paralle computing
+if ~isempty(strfind(getenv('HOSTNAME'),'.savio')) || ~isempty(strfind(getenv('HOSTNAME'),'.brc'))
+    MyParPool = parpool(min(nshuffle,str2double(getenv('SLURM_CPUS_ON_NODE'))),'IdleTimeout', Inf);
+    system('mkdir -p /global/scratch/$USER/PlaneCells/$SLURM_JOB_ID')
+    [~,JobID] = system('echo $SLURM_JOB_ID');
+    parcluster.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
+end
+fprintf('End of parpool initalization\n')
+toc(TimeKeeper)
 %% Main loop
 % cd(bat_folder_name_date)
 load(fullfile(bat_folder_name_date,data_file_name))
-
+fprintf('Done loading data\n')
+toc(TimeKeeper)
 shuffled_data_plane_cell = [];
 
 PI_shuff_arr = NaN*ones(1,nshuffle);
@@ -736,8 +748,8 @@ parfor shuffle_index = 1:nshuffle
         diff(prj_size11)/bin_size_pixels_2_D ) + NaN ; % Initialize
     
     
-    for ii_x_bin = 1 : diff(prj_size11)/bin_size_pixels_2_D , % Loop over x-bins
-        for ii_z_bin = 1 : diff(prj_size22)/bin_size_pixels_2_D , % Loop over z-bins
+    for ii_x_bin = 1 : diff(prj_size11)/bin_size_pixels_2_D  % Loop over x-bins
+        for ii_z_bin = 1 : diff(prj_size22)/bin_size_pixels_2_D  % Loop over z-bins
             % Spike Density:
             mat_spike_density_raw_prj( ii_z_bin,ii_x_bin) = ... % All the data
                 sum( x_spikes_prj >= 1 + bin_size_pixels_2_D*(ii_x_bin-1) & ...
@@ -815,7 +827,8 @@ parfor shuffle_index = 1:nshuffle
             if ~isnan(place_field_density_smoothed_with_NaN_prj(ii,jj))
                 position = histc(place_field_density_smoothed_with_NaN_normalized_prj(ii,jj),[0:0.2:1]);
                 place_field_density_smoothed_with_NaN_5_level_binned_prj(ii,jj) = sum(position(1:end).*[0.0:0.2:1]);
-            else end
+            else
+            end
         end
     end
     
@@ -849,6 +862,9 @@ parfor shuffle_index = 1:nshuffle
     
 end
 
+fprintf('Done running %d\n', nshuffle)
+toc(TimeKeeper)
+
 shuffled_data_plane_cell.SI3D = SI3D_shuff_arr;
 shuffled_data_plane_cell.SIXY = SI_XY_shuff_arr;
 shuffled_data_plane_cell.SIZY = SI_ZY_shuff_arr;
@@ -858,4 +874,6 @@ shuffled_data_plane_cell.PI = PI_shuff_arr;
 
 shuffled_data_filename = strcat('shuffled_data_plane_cell_',bat_name,'_',dates,'_',data_file_name);
 save(fullfile(bat_folder_name_date, shuffled_data_filename),'shuffled_data_plane_cell','-v7.3')
+fprintf('Done saving data\n')
+toc(TimeKeeper)
 end
