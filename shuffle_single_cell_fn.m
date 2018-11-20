@@ -718,11 +718,14 @@ parfor shuffle_index = 1:nshuffle
     prj_size1 = round(max(pos_behav_of_prj(:,dim1))-min(pos_behav_of_prj(:,dim1)));
     prj_size2 = round(max(pos_behav_of_prj(:,dim2))-min(pos_behav_of_prj(:,dim2)));
     
+    prj_size11 = [];prj_size22 = [];
     if rem(prj_size1,bin_size_pixels_2_D)~=0
         prj_size11 = [0 bin_size_pixels_2_D*ceil(prj_size1/bin_size_pixels_2_D)];
+    else prj_size11 = [0 prj_size1];
     end
     if rem(prj_size2,bin_size_pixels_2_D)~=0
         prj_size22 = [0 bin_size_pixels_2_D*ceil(prj_size2/bin_size_pixels_2_D)];
+    else prj_size22 = [0 prj_size2];
     end
     
     mat_spike_density_raw_prj = zeros( diff(prj_size22)/bin_size_pixels_2_D,...
