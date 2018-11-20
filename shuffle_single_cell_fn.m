@@ -11,7 +11,7 @@ data_folder_name = '/global/scratch/jelie/PlaneCells/Data_cluster';
 bat_folder_name = fullfile(data_folder_name,bat_name);
 bat_folder_name_date = strcat(bat_folder_name,filesep,dates);
 
-nshuffle = 100;
+nshuffle = 1000;
 % Parameters of 3D rate map
 frames_per_second = 180;
 room_dimensions = [0 5400 0 5400 0 2000]; % x,y,z
