@@ -55,7 +55,7 @@ if ~isempty(strfind(getenv('HOSTNAME'),'.savio')) || ~isempty(strfind(getenv('HO
     MyParPool = c.parpool(NumWorkNeeded,'IdleTimeout', Inf);
     system('mkdir -p /global/scratch/$USER/PlaneCells/$SLURM_JOB_ID')
     [~,JobID] = system('echo $SLURM_JOB_ID');
-    parcluster.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
+    c.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
 end
 fprintf('End of parpool initalization\n')
 toc(TimeKeeper)
