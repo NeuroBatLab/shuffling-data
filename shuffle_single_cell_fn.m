@@ -48,14 +48,13 @@ if ~isempty(strfind(getenv('HOSTNAME'),'.savio')) || ~isempty(strfind(getenv('HO
     feature('numCores')
     fprintf('This is the number of CPUs on the node\n')
     getenv('SLURM_CPUS_ON_NODE') 
-    c = parcluster; 
+    
     NumWorkNeeded = min(nshuffle,str2double(getenv('SLURM_CPUS_ON_NODE')));
     fprintf('We need %d workers/cores\n', NumWorkNeeded);
-    c.numWorkers = NumWorkNeeded; 
-    MyParPool = c.parpool(NumWorkNeeded,'IdleTimeout', Inf);
+    MyParPool = parpool(NumWorkNeeded,'IdleTimeout', Inf);
     system('mkdir -p /global/scratch/$USER/PlaneCells/$SLURM_JOB_ID')
     [~,JobID] = system('echo $SLURM_JOB_ID');
-    c.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
+    parcluster.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
 end
 fprintf('End of parpool initalization\n')
 toc(TimeKeeper)
