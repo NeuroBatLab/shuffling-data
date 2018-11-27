@@ -42,7 +42,17 @@ spike_thresh = 40;
 
 %% Configure paralle computing
 if ~isempty(strfind(getenv('HOSTNAME'),'.savio')) || ~isempty(strfind(getenv('HOSTNAME'),'.brc'))
-    MyParPool = parpool(min(nshuffle,str2double(getenv('SLURM_CPUS_ON_NODE'))),'IdleTimeout', Inf);
+    fprintf('Initializing the cluster\n')
+    parcluster 
+    fprintf('This is the number fo available cores\n')
+    feature('numCores')
+    fprintf('This is the number of CPUs on the node\n')
+    getenv('SLURM_CPUS_ON_NODE') 
+    c = parcluster; 
+    NumWorkNeeded = min(nshuffle,str2double(getenv('SLURM_CPUS_ON_NODE')));
+    fprintf('We need %d workers/cores\n', NumWorkNeeded);
+    c.numWorkers = NumWorkNeeded; 
+    MyParPool = c.parpool(NumWorkNeeded,'IdleTimeout', Inf);
     system('mkdir -p /global/scratch/$USER/PlaneCells/$SLURM_JOB_ID')
     [~,JobID] = system('echo $SLURM_JOB_ID');
     parcluster.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
@@ -730,14 +740,15 @@ parfor shuffle_index = 1:nshuffle
     prj_size1 = round(max(pos_behav_of_prj(:,dim1))-min(pos_behav_of_prj(:,dim1)));
     prj_size2 = round(max(pos_behav_of_prj(:,dim2))-min(pos_behav_of_prj(:,dim2)));
     
-    prj_size11 = [];prj_size22 = [];
     if rem(prj_size1,bin_size_pixels_2_D)~=0
         prj_size11 = [0 bin_size_pixels_2_D*ceil(prj_size1/bin_size_pixels_2_D)];
-    else prj_size11 = [0 prj_size1];
+    else
+        prj_size11 = [0 prj_size1];
     end
     if rem(prj_size2,bin_size_pixels_2_D)~=0
         prj_size22 = [0 bin_size_pixels_2_D*ceil(prj_size2/bin_size_pixels_2_D)];
-    else prj_size22 = [0 prj_size2];
+    else
+        prj_size22 = [0 prj_size2];
     end
     
     mat_spike_density_raw_prj = zeros( diff(prj_size22)/bin_size_pixels_2_D,...
