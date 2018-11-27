@@ -43,7 +43,7 @@ spike_thresh = 40;
 %% Configure paralle computing
 if ~isempty(strfind(getenv('HOSTNAME'),'.savio')) || ~isempty(strfind(getenv('HOSTNAME'),'.brc'))
     fprintf('Initializing the cluster\n')
-    parcluster 
+    Mycluster = parcluster() 
     fprintf('This is the number fo available cores\n')
     feature('numCores')
     fprintf('This is the number of CPUs on the node\n')
@@ -51,10 +51,10 @@ if ~isempty(strfind(getenv('HOSTNAME'),'.savio')) || ~isempty(strfind(getenv('HO
     
     NumWorkNeeded = min(nshuffle,str2double(getenv('SLURM_CPUS_ON_NODE')));
     fprintf('We need %d workers/cores\n', NumWorkNeeded);
-    MyParPool = parpool(NumWorkNeeded,'IdleTimeout', Inf);
+    MyParPool = parpool(Mycluster,NumWorkNeeded,'IdleTimeout', Inf);
     system('mkdir -p /global/scratch/$USER/PlaneCells/$SLURM_JOB_ID')
     [~,JobID] = system('echo $SLURM_JOB_ID');
-    parcluster.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
+    Mycluster.JobStorageLocation = ['/global/scratch/jelie/PlaneCells/' JobID];    
 end
 fprintf('End of parpool initalization\n')
 toc(TimeKeeper)
