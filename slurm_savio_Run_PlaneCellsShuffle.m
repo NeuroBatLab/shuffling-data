@@ -14,7 +14,7 @@ JobParams.CPU = 20;
 JobParams.TimeLimit = '15:00:00';
 JobParams.Name = 'PlaneCells';
 SlurmParams.cmd = 'shuffle_single_cell_fn(''%s'', ''%s'',''%s'');';
-SlurmParams.resultsDirectory='/global/scratch/karthiksoman/PlaneCells';
+SlurmParams.resultsDirectory='/global/scratch/users/karthiksoman/Planecells';
 
 %% Set up variables to identify cells to run and order
 NumCells = size(Data.data_index_table,1);
@@ -27,7 +27,8 @@ for ff=1:NumCells
     CellNum = Data.data_index_table{ff,3};
     fprintf(1,'creating job file %d/%d: %s %s %s\n',ff,NumCells, Batname, Date,CellNum);
     JobParams.JobName = sprintf('%s_%s_%s',Batname,Date,CellNum);
-    JobParams.out = fullfile(SlurmParams.resultsDirectory,sprintf('slurm_out_%s_%%j.txt', JobParams.JobName));
+%     JobParams.out = fullfile(SlurmParams.resultsDirectory,sprintf('slurm_out_%s_%%j.txt', JobParams.JobName));
+    JobParams.out = strcat(SlurmParams.resultsDirectory,'/',sprintf('slurm_out_%s_%%j.txt', JobParams.JobName));
     JobParams.err = JobParams.out;
     icmd = sprintf(SlurmParams.cmd, Batname, Date,CellNum);
     fprintf(1,'creating file slurm_sbatch with command %s\n',icmd);
