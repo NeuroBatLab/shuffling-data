@@ -2,7 +2,7 @@
 Path2Project = 'D:\Yartsev lab\Height cell experiment\restructured data';
 addpath('C:\Users\karth\OneDrive\Documents\GitHub\Slurmbot')
 % Retrieve list of cells
-Data = load(fullfile(Path2Project,'data_table_index_for_shuffling_in_the_cluster_3.mat'));
+Data = load(fullfile(Path2Project,'data_table_index_for_shuffling_in_the_cluster_4.mat'));
 
 %% Set up the variables for slurm
 JobParams = struct;
@@ -12,7 +12,7 @@ JobParams.Qos = 'savio_normal';
 JobParams.NTasks = 1;
 JobParams.CPU = 20;
 JobParams.TimeLimit = '15:00:00';
-JobParams.Name = 'PlaneCells';
+JobParams.Name = 'Planecells';
 SlurmParams.cmd = 'shuffle_single_cell_fn(''%s'', ''%s'',''%s'');';
 SlurmParams.resultsDirectory='/global/scratch/users/karthiksoman/Planecells';
 
