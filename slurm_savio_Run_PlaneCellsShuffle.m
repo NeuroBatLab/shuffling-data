@@ -2,7 +2,7 @@
 Path2Project = 'D:\Yartsev lab\Height cell experiment\restructured data';
 addpath('C:\Users\karth\OneDrive\Documents\GitHub\Slurmbot')
 % Retrieve list of cells
-Data = load(fullfile(Path2Project,'data_table_index_for_shuffling_in_the_cluster_4.mat'));
+Data = load(fullfile(Path2Project,'data_table_index_for_shuffling_in_the_cluster_5.mat'));
 
 %% Set up the variables for slurm
 JobParams = struct;
