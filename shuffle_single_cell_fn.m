@@ -58,7 +58,7 @@ fprintf('End of parpool initalization\n')
 toc(TimeKeeper)
 %% Main loop
 % cd(bat_folder_name_date)
-load(fullfile(bat_folder_name_date,data_file_name, '.mat'))
+load(fullfile(bat_folder_name_date,data_file_name))
 fprintf('Done loading data\n')
 toc(TimeKeeper)
 shuffled_data_plane_cell = [];
