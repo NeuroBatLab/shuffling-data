@@ -6,7 +6,7 @@ function [shuffled_data_plane_cell] = shuffle_single_cell_fn(bat_name,dates,data
 
 %% Parameters
 TimeKeeper = tic;
-data_folder_name = '/global/scratch/users/karthiksoman/Planecells/Data_cluster/Data_cluster_5';
+data_folder_name = '/global/scratch/users/karthiksoman/Planecells/Data_cluster/Data_cluster_6';
 % data_folder_name = 'D:\Yartsev lab\Height cell experiment\restructured data\';
 bat_folder_name = fullfile(data_folder_name,bat_name);
 bat_folder_name_date = strcat(bat_folder_name,filesep,dates);
